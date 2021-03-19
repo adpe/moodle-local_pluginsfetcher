@@ -5,8 +5,6 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-18.04
-    env:
-      PHPUNIT_IGNORE_PATHS: 'classes/privacy'
 
     services:
       postgres:
@@ -106,8 +104,11 @@ jobs:
         if: ${{ always() }}
         run: moodle-plugin-ci behat --profile chrome
 
-      - name: Coveralls upload
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        if: ${{ matrix.php == '7.2' && matrix.moodle-branch == 'MOODLE_310_STABLE' && matrix.database == 'mariadb'}}
-        run: moodle-plugin-ci coveralls-upload
+      - name: Generate PHPUnit coverage badge
+        uses: timkrase/phpunit-coverage-badge@v1.2.0
+        with:
+          report: 'coverage.xml'
+          coverage_badge_path: '.coverage/badge.svg'
+          push_badge: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          commit_message: 'Update PHPUnit coverage badge'
