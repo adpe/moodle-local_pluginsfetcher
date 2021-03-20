@@ -30,12 +30,12 @@ return new class extends phpunit_coverage_info {
     protected $whitelistfolders = [];
 
     /** @var array The list of files relative to the plugin root to whitelist in coverage generation. */
-    protected $whitelistfiles = [];
+    protected $whitelistfiles = [
+            'externallib.php'
+    ];
 
     /** @var array The list of folders relative to the plugin root to excludelist in coverage generation. */
-    protected $excludelistfolders = [
-            'classes/privacy'
-    ];
+    protected $excludelistfolders = [];
 
     /** @var array The list of files relative to the plugin root to excludelist in coverage generation. */
     protected $excludelistfiles = [];
