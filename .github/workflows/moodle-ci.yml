@@ -5,6 +5,8 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-18.04
+    env:
+      PHPUNIT_IGNORE_PATHS: 'classes/privacy'
 
     services:
       postgres:
@@ -105,10 +107,17 @@ jobs:
         run: moodle-plugin-ci behat --profile chrome
 
       - name: Generate PHPUnit coverage badge
+        if: ${{ matrix.php == '7.2' && matrix.moodle-branch == 'MOODLE_310_STABLE' && matrix.database == 'mariadb'}}
         uses: timkrase/phpunit-coverage-badge@v1.2.0
         with:
           report: 'coverage.xml'
-          coverage_badge_path: '.coverage/badge.svg'
-          push_badge: true
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          commit_message: 'Update PHPUnit coverage badge'
+          coverage_badge_path: 'plugin/.coverage/badge.svg'
+
+      - name: Commit PHPUnit coverage badge
+        if: ${{ matrix.php == '7.2' && matrix.moodle-branch == 'MOODLE_310_STABLE' && matrix.database == 'mariadb'}}
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: 'badge.svg'
+          cwd: './plugin/.coverage'
+          author_email: '41898282+github-actions[bot]@users.noreply.github.com'
+          message: 'Update PHPUnit coverage badge'
